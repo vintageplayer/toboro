@@ -167,7 +167,173 @@ function Display({
 }
 
 const Status = (props: SubgraphIndexingStatus) => {
-  return <> </>
+  const chain = props.chains[0]
+
+  return (
+    <div className="p-2">
+      <div className="my-3 grid grid-cols-1 gap-2">
+        <div>
+          <div>ID</div>
+
+          <div
+            className="cursor-copy truncate text-blue-600"
+            onClick={() => props.subgraph}
+          >
+            {props.subgraph}
+          </div>
+        </div>
+        <div>
+          <div>Links</div>
+          <div>
+            <a
+              target="_blank"
+              className="text-blue-600 hover:underline"
+              href={`https://api.thegraph.com/subgraphs/id/${props.subgraph}`}
+            >
+              API
+            </a>
+            {' ⛓️ '}
+
+            <a
+              target="_blank"
+              className="text-blue-600 hover:underline"
+              href={`https://api.thegraph.com/explorer/graphql?query=${encodeURIComponent(
+                `{
+  subgraphLogs(
+    subgraphId: "${props.subgraph}"
+    first: 100
+    order: NewestFirst
+    filters: ["error", "warning"]
+    searchText: ""
+  ) {
+    timestamp
+    text
+  }
+}`
+              )}`}
+            >
+              Logs
+            </a>
+          </div>
+        </div>
+      </div>
+      <div className="my-3 grid grid-cols-4 gap-4">
+        <div>
+          <div>Network</div>
+          <div className="text-blue-600">{chain.network}</div>
+        </div>
+        <div>
+          <div>Health</div>
+          <div>
+            {props.health === 'healthy'
+              ? '✅'
+              : props.health === 'unhealthy'
+              ? '⚠️'
+              : '❌'}
+          </div>
+        </div>
+        <div>
+          <div>Synced</div>
+          <div>{props.synced ? '✅' : '❌'}</div>
+        </div>
+        <div>
+          <div>Entities</div>
+          <div className="text-blue-600">
+            {parseInt(props.entityCount).toLocaleString('en-US')}
+          </div>
+        </div>
+      </div>
+      <div className="my-3 grid grid-cols-4 gap-4">
+        {chain.earliestBlock && (
+          <div>
+            <div>Start #</div>
+            <div
+              className="cursor-copy text-blue-600"
+              onClick={() =>
+                parseInt(chain.earliestBlock!.number).toString()
+              }
+            >
+              {parseInt(chain.earliestBlock.number).toLocaleString('en-US')}
+            </div>
+          </div>
+        )}
+        {chain.latestBlock && (
+          <div>
+            <div>Synced #</div>
+            <div
+              className="cursor-copy text-blue-600"
+              onClick={() =>
+                parseInt(chain.latestBlock!.number).toString()
+              }
+            >
+              {parseInt(chain.latestBlock.number).toLocaleString('en-US')}
+            </div>
+          </div>
+        )}
+        {chain.chainHeadBlock && (
+          <div>
+            <div>Last #</div>
+            <div
+              className="cursor-copy text-blue-600"
+              onClick={() =>
+                parseInt(chain.chainHeadBlock!.number).toString()                
+              }
+            >
+              {parseInt(chain.chainHeadBlock.number).toLocaleString('en-US')}
+            </div>
+          </div>
+        )}
+        {chain.earliestBlock && chain.latestBlock && chain.chainHeadBlock && (
+          <div>
+            <div>Progress</div>
+            <div className="text-blue-600">
+              {(
+                (100 *
+                  (Number(chain.latestBlock?.number) -
+                    Number(chain.earliestBlock?.number))) /
+                (Number(chain.chainHeadBlock?.number) -
+                  Number(chain.earliestBlock?.number))
+              ).toFixed(2)}
+              %
+            </div>
+          </div>
+        )}
+      </div>
+      {props.fatalError && (
+        <div className="my-3 flex flex-col space-y-3 rounded-md border border-red-600 p-2 text-sm text-red-600">
+          A{' '}
+          {props.fatalError?.deterministic
+            ? 'determinstic'
+            : 'non-deterministic'}{' '}
+          fatal error occured
+          {props.fatalError?.block
+            ? ` at block ${props.fatalError?.block?.number}`
+            : ''}
+          {props.fatalError?.handler
+            ? ` on handler ${props.fatalError?.handler}`
+            : ''}
+          : {props.fatalError?.message}
+        </div>
+      )}
+      {props.nonFatalErrors &&
+        props.nonFatalErrors.map((nonFatalError, i) => (
+          <div
+            key={i}
+            className="my-3 rounded-md border border-yellow-600 p-1 text-sm text-yellow-600"
+          >
+            {nonFatalError.handler && (
+              <div>handler: {nonFatalError.handler}</div>
+            )}
+            {nonFatalError.block?.number && (
+              <div>block number: {nonFatalError.block?.number}</div>
+            )}
+            {nonFatalError.message && (
+              <div>message: {nonFatalError.message}</div>
+            )}
+          </div>
+        ))}
+    </div>
+  )
 }
 
 export function isValidID(id: string): boolean {
