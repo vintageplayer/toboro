@@ -55,6 +55,17 @@ const Home: NextPage = () => {
     setLoading(false)
   }
 
+  // fetch on interval
+  useInterval(
+    () => {
+      if (q && (isValidID(q) || isValidName(q))) {
+        fetchData(q)
+        setUpdatedAt(new Date())
+      }
+    },
+    autoRefresh ? AUTO_REFRESH_INTERVAL * 1000 : null
+  )
+
   // fetch on load if query params is not empty
   useEffect(() => {
     if (q && (isValidID(q) || isValidName(q))) {
@@ -105,7 +116,12 @@ const Home: NextPage = () => {
             }}
             ref={inputElement}
           />
-
+          {autoRefresh && (
+            <p className="my-3 rounded bg-blue-200 p-2 text-center">
+              Checking Every 30 seconds. Last updated at{' '}
+              {updatedAt.toLocaleTimeString('en-US')}
+            </p>
+          )}
           <Display
             subgraphID={q || ''}
             loading={loading}
