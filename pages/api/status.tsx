@@ -70,15 +70,6 @@ export interface SubgraphIndexingStatus {
   node?: string
 }
 
-axios.interceptors.request.use((request) => {
-  console.log('Request:', JSON.stringify(request, null, 2))
-  return request
-})
-axios.interceptors.response.use(response => {
-  console.log('Response:', JSON.stringify(response, null, 2))
-  return response
-})
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Result<Array<SubgraphIndexingStatus>>>

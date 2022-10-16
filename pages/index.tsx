@@ -74,6 +74,8 @@ const Home: NextPage = () => {
   }, [])
 
   function handleChange(event: React.FormEvent<HTMLInputElement>) {
+    // TODO: after visiting to a shared okgraph url, then delete the search string, press enter, it won't trigger Input.onChange
+    // console.log(`changed to [${event.currentTarget.value}]`)
     setTempQ(event.currentTarget.value)
   }
 
@@ -136,6 +138,7 @@ const Home: NextPage = () => {
 
 export default Home
 
+// TODO: split into 2, one for pre-fetch error, another for post-fetch error and data
 function Display({
   subgraphID,
   loading,
