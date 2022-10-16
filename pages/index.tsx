@@ -169,3 +169,13 @@ function Display({
 const Status = (props: SubgraphIndexingStatus) => {
   return <> </>
 }
+
+export function isValidID(id: string): boolean {
+  return id.length === 46 && id.startsWith('Qm')
+}
+
+export function isValidName(name: string): boolean {
+  return (
+    name.split('/').length === 2 && !name.startsWith('/') && !name.endsWith('/')
+  )
+}
