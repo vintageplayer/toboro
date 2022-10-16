@@ -153,14 +153,14 @@ function Display({
   if (subgraphID.length === 0) {
     return (
       <p className="my-3 text-center">
-        Tired of{' '}
+        Know {' '}
         <a
           className="underline"
           href="https://thegraph.com/docs/en/hosted-service/deploy-subgraph-hosted/#checking-subgraph-health"
         >
-          checking subgraph health
+          subgraph issues
         </a>
-        ? Put an Qm-ID or a name 👆
+        &nbsp;before your users. Put an Qm-ID or a name 👆
       </p>
     )
   }
